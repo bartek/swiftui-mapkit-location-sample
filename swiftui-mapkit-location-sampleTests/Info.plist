@@ -18,13 +18,5 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We want to use this app</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>we want this</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>dfsdfsfsd</string>
-	<key>NSLocationUsageDescription</key>
-	<string>dfssdffd</string>
 </dict>
 </plist>
