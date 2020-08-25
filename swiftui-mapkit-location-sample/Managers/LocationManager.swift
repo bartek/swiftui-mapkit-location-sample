@@ -32,7 +32,6 @@ extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
         case .notDetermined:
-            print("notDetermined")
             manager.requestWhenInUseAuthorization()
         default:
             break

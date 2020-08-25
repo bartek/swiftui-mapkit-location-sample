@@ -10,7 +10,10 @@ import SwiftUI
 import MapKit
 
 struct MapView: UIViewRepresentable {
+    
     class Coordinator: NSObject, MKMapViewDelegate {
+        @EnvironmentObject var locationService: LocationService
+
         var parent: MapView
         
         init(_ parent: MapView) {
@@ -31,7 +34,7 @@ struct MapView: UIViewRepresentable {
         mapView.delegate = context.coordinator
         
         mapView.showsUserLocation = true
-        mapView.userTrackingMode = .none
+        mapView.userTrackingMode = .follow
         
 
         return mapView
