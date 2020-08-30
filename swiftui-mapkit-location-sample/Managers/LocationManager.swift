@@ -8,12 +8,11 @@
 
 import Foundation
 import MapKit
-
-// https://zonneveld.dev/ios-13-prepare-your-app-for-the-allow-once-location-permission/
+import SwiftUI
 
 class LocationManager: NSObject, ObservableObject {
     private let locationManager = CLLocationManager()
-
+    
     @Published var location: CLLocation? = nil
     
     override init() {

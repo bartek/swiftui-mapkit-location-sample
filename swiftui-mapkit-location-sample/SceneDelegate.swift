@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
         // Set a single instance of the manager for everything related to location search
-        let locationService = LocationService()
+        let searchService = SearchService()
 
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UIHostingController(rootView: contentView.environmentObject(locationService))
+            window.rootViewController = UIHostingController(rootView: contentView.environmentObject(searchService))
             self.window = window
             window.makeKeyAndVisible()
         }

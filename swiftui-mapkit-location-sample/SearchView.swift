@@ -10,7 +10,8 @@ import SwiftUI
 import MapKit
 
 struct SearchView: View {
-    @EnvironmentObject var locationService: LocationService
+    @EnvironmentObject var searchService: SearchService
+    @Binding var showingSearch: Bool
     
     var body: some View {
         VStack {
@@ -18,7 +19,7 @@ struct SearchView: View {
             
             HStack() {
                 Spacer()
-                if locationService.status == .isSearching {
+                if searchService.status == .isSearching {
                     Image(systemName: "clock")
                         .foregroundColor(.gray)
                 } else {
@@ -26,19 +27,22 @@ struct SearchView: View {
                         .foregroundColor(.gray)
                 }
                 
-                TextField("", text: $locationService.queryFragment)
+                TextField("", text: $searchService.queryFragment)
                     .padding(.horizontal)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
             }
             
             
-            // searchResults will be populated by the searchCompleter
-            List(locationService.searchResults, id: \.self) { result in
+            // searchResults will be populated by the searchCompleter within SearchService
+            List(searchService.searchResults, id: \.self) { result in
                 VStack(alignment: .leading) {
                     Text(result.title)
                     Text(result.subtitle)
                         .font(.subheadline)
                         .foregroundColor(.gray)
+                }.onTapGesture {
+                    self.searchService.searchForMapItems(for: result.title)
+                    self.showingSearch.toggle()
                 }
             }
         }
@@ -46,9 +50,10 @@ struct SearchView: View {
 }
 
 struct SearchView_Previews: PreviewProvider {
+    @State static var showingSearch = false
     static var previews: some View {
-        let locationService = LocationService()
+        let searchService = SearchService()
       
-        return SearchView().environmentObject(locationService)
+        return SearchView(showingSearch: $showingSearch).environmentObject(searchService)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  LocationService.swift
+//  SearchService.swift
 //  swiftui-mapkit-location-sample
 //
 //  Created by Bartek Ciszkowski on 2020-08-21.
@@ -11,7 +11,7 @@ import MapKit
 import Combine
 
 
-class LocationService: NSObject, ObservableObject {
+class SearchService: NSObject, ObservableObject {
     enum LocationStatus: Equatable {
         case idle
         case noResults
@@ -23,7 +23,8 @@ class LocationService: NSObject, ObservableObject {
     @Published var queryFragment: String = ""
     @Published private(set) var status: LocationStatus = .idle
     @Published private(set) var searchResults: [MKLocalSearchCompletion] = []
-    
+    @Published private(set) var annotations: [MKPointAnnotation] = []
+
     private var queryCancellable: AnyCancellable?
     private let searchCompleter: MKLocalSearchCompleter!
     
@@ -49,12 +50,40 @@ class LocationService: NSObject, ObservableObject {
     func setRegion(_ region: MKCoordinateRegion) {
         self.searchCompleter.region = region
     }
+    
+    func searchForMapItems(for result: String) {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = result
+        searchRequest.region = self.searchCompleter.region
+              
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { (response, error) in
+            guard let response = response else {
+                // Handle the error
+                return
+            }
+          
+            guard let item = response.mapItems.first else {
+                return
+            }
+
+            let annotation = MKPointAnnotation()
+            annotation.title = item.placemark.title
+            annotation.coordinate = item.placemark.coordinate
+            annotation.subtitle = ""
+            self.annotations = [annotation]
+        }
+    }
 }
 
-extension LocationService: MKLocalSearchCompleterDelegate {
+extension SearchService: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        self.searchResults = completer.results
+        
+        // The first result is a "Search Nearby" .. and the intent of this application is
+        // to pick a single point and annotate + center, so we can omit this result
+        self.searchResults = completer.results.filter({ $0.subtitle != "Search Nearby"})
         self.status = completer.results.isEmpty ? .noResults : .result
+    
     }
     
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
